@@ -1,18 +1,36 @@
+import { gqlFetch } from '../lib/gql';
+
 export async function getServerSideProps() {
-  const res = await fetch(process.env.NEXT_PUBLIC_WORDPRESS_GRAPHQL, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ query: `{ generalSettings { title url } }` })
-  });
-  const json = await res.json();
-  return { props: { gs: json.data?.generalSettings || null } };
+  const data = await gqlFetch(`
+    query Posts {
+      posts(first: 10) {
+        nodes {
+          id
+          title
+          slug
+          date
+        }
+      }
+      generalSettings { title url }
+    }
+  `);
+
+  return { props: { posts: data.posts.nodes, gs: data.generalSettings } };
 }
 
-export default function Home({ gs }) {
+export default function Home({ posts, gs }) {
   return (
-    <main style={{padding:24,fontFamily:'sans-serif'}}>
-      <h1>Headless WP Frontend</h1>
-      <pre>{JSON.stringify(gs, null, 2)}</pre>
+    <main style={{ padding: 24, fontFamily: 'sans-serif' }}>
+      <h1>{gs?.title || 'Headless WP Frontend'}</h1>
+      <p>WP URL: {gs?.url}</p>
+      <h2>Latest Posts</h2>
+      <ul>
+        {posts.map(p => (
+          <li key={p.id}>
+            <a href={`/posts/${p.slug}`}>{p.title}</a>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }
