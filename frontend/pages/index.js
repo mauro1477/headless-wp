@@ -1,5 +1,5 @@
 import { gqlFetch } from '../lib/gql';
-
+import AuthBar from '../components/AuthBar';
 export async function getServerSideProps() {
   const data = await gqlFetch(`
     query Posts {
@@ -21,6 +21,7 @@ export async function getServerSideProps() {
 export default function Home({ posts, gs }) {
   return (
     <main style={{ padding: 24, fontFamily: 'sans-serif' }}>
+      <AuthBar />
       <h1>{gs?.title || 'Headless WP Frontend'}</h1>
       <p>WP URL: {gs?.url}</p>
       <h2>Latest Posts</h2>

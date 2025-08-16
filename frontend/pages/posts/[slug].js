@@ -13,10 +13,6 @@ export async function getStaticProps({ params }) {
         title
         date
         content
-        heroBlock {
-          heroTitle
-          subTitle
-        }
       }
     }
   `;
@@ -26,14 +22,14 @@ export async function getStaticProps({ params }) {
 }
 
 export default function Post({ post }) {
-  const f = post.heroBlock || {};
+  // const f = post.heroBlock || {};
   return (
     <main style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
       <a href="/">← Back</a>
       <h1 style={{ marginTop: 12 }}>{post.title}</h1>
       {/* Text fields */}
-      {f.heroTitle && <p style={{ fontSize: 20, marginTop: 8 }}>{f.heroTitle}</p>}
-      {f.subTitle && <p style={{ opacity: 0.8 }}>{f.subTitle}</p>}
+      {/* {f.heroTitle && <p style={{ fontSize: 20, marginTop: 8 }}>{f.heroTitle}</p>}
+      {f.subTitle && <p style={{ opacity: 0.8 }}>{f.subTitle}</p>} */}
 
     </main>
   );
