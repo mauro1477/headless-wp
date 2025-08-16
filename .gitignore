@@ -1,1 +1,68 @@
 frontend/node_modules/
+# --- Node & package managers ---
+node_modules/
+.pnpm-store/
+.pnp/
+.pnp.js
+.pnp.cjs
+
+# Yarn (Berry) - keep releases/plugins/sdks/versions in repo
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# --- Build outputs ---
+build/
+dist/
+out/
+.next/
+.next/cache/
+storybook-static/
+
+# --- Caches & temp ---
+.cache/
+.vite/
+parcel-cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+*.tgz
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# --- Environment files (keep .env.example committed) ---
+.env
+.env.local
+.env.*.local
+
+# --- Testing artifacts ---
+coverage/
+.cypress/
+cypress/videos/
+cypress/screenshots/
+playwright-report/
+test-results/
+
+# --- Editors & OS junk ---
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# --- Misc provider/tooling folders ---
+.vercel/
+.netlify/

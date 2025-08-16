@@ -7,27 +7,34 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const data = await gqlFetch(`
+  const QUERY = `
     query PostBySlug($slug: ID!) {
       post(id: $slug, idType: SLUG) {
         title
-        content
         date
-        slug
+        content
+        heroBlock {
+          heroTitle
+          subTitle
+        }
       }
     }
-  `, { slug: params.slug });
-
+  `;
+  const data = await gqlFetch(QUERY, { slug: params.slug });
   if (!data?.post) return { notFound: true };
   return { props: { post: data.post }, revalidate: 60 };
 }
 
 export default function Post({ post }) {
+  const f = post.heroBlock || {};
   return (
-    <main style={{ padding: 24, fontFamily: 'sans-serif' }}>
+    <main style={{ padding: 24, fontFamily: 'system-ui, sans-serif' }}>
       <a href="/">← Back</a>
-      <h1>{post.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      <h1 style={{ marginTop: 12 }}>{post.title}</h1>
+      {/* Text fields */}
+      {f.heroTitle && <p style={{ fontSize: 20, marginTop: 8 }}>{f.heroTitle}</p>}
+      {f.subTitle && <p style={{ opacity: 0.8 }}>{f.subTitle}</p>}
+
     </main>
   );
 }

@@ -1,0 +1,26 @@
+{"username":"mauro","password":"L0IZjBcO*Rw)DB3gw)1CDlFg","AUTH_CODE":"THISISMySpeCiaLAUtasdfasdfsdhCode"}
+
+
+curl -sS -X POST -H 'Content-Type: application/json' --data '{"username":"mauro","password":"L0IZjBcO*Rw)DB3gw)1CDlFg"}' http://localhost:8080/wp-json/simple-jwt-login/v1/auth | jq .
+
+curl -sS -X POST -H 'Content-Type: application/json' --data '{"username":"mauro","password":"L0IZjBcO*Rw)DB3gw)1CDlFg","AUTH_CODE":"THISISMySpeCiaLAUtasdfasdfsdhCode"}' http://localhost:8080/wp-json/simple-jwt-login/v1/auth | jq .
+
+curl -sS -X POST -H 'Content-Type: application/json' --data '{"username":"mauro","password":"L0IZjBcO*Rw)DB3gw)1CDlFg"}' http://localhost:8080/wp-json/simple-jwt-login/v1/auth | jq .
+
+curl -sS -X POST -H 'Content-Type: application/json' --data '{"email":"maurovargas7725@gmail.com","password":"L0IZjBcO*Rw)DB3gw)1CDlFg"}' http://localhost:8080/wp-json/simple-jwt-login/v1/auth | jq .
+
+
+http://localhost:8080/?rest_route=/simple-jwt-login/v1/auth&email=maurovargas7725@gmail.com&password=Test!2345
+
+docker compose exec -u www-data wordpress bash -lc 'cd /var/www/html && wp user update mauro --user_pass="L0IZjBcO*Rw)DB3gw)1CDlFg"'
+
+docker compose exec -u www-data wordpress bash -lc 'cd /var/www/html && wp user update mauro --user_pass="Test!2345"'
+
+
+curl -sS -X POST -H 'Content-Type: application/json' \
+  --data '{"username":"mauro","password":"Test!2345"}' \
+  http://localhost:8080/wp-json/simple-jwt-login/v1/auth | tee /tmp/auth.json | jq .
+
+curl -sS -X POST -H 'Content-Type: application/json' \
+  --data '{"email":"maurovargas7725@gmail.com","password":"Test!2345"}' \
+  http://localhost:8080/wp-json/simple-jwt-login/v1/auth | tee /tmp/auth.json | jq .

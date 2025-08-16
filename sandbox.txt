@@ -1,0 +1,11 @@
+# If you log in with username
+TOKEN=$(curl -sS -X POST -H 'Content-Type: application/json' \
+  --data '{"login":"mauro","password":"New!Strong!Pass123"}' \
+  http://localhost:8080/wp-json/simple-jwt-login/v1/auth | jq -r '.jwt // .data.jwt')
+
+echo "$TOKEN"     # should look like xxx.yyy.zzz
+
+
+TOKEN=$(curl -sS -X POST -H 'Content-Type: application/json' \
+  --data '{"username":"mauro","password":"New!Strong!Pass123"}' \
+  http://localhost:8080/wp-json/simple-jwt-login/v1/auth | jq -r '.jwt // .data.jwt')

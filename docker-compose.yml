@@ -65,29 +65,57 @@ services:
     networks:
       - headless_net
 
+
   wpcli:
     image: wordpress:cli-php8.2
     container_name: headless_wpcli
     depends_on:
+      db:
+        condition: service_healthy
       wordpress:
         condition: service_started
     user: "www-data"
+    working_dir: /var/www/html
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - wp_data:/var/www/html
-      - ./wp/wp-content:/var/www/html/wp-content
-    working_dir: /var/www/html
-    entrypoint: sh -c
-    command: >
-      "wp core is-installed || wp core install
-       --url=http://localhost:8080
-       --title='Headless WP'
-       --admin_user='${WP_ADMIN_USER}'
-       --admin_password='${WP_ADMIN_PASSWORD}'
-       --admin_email='${WP_ADMIN_EMAIL}';
-       wp plugin update --all;
-       echo 'WP-CLI ready'; sleep infinity"
-    networks:
-      - headless_net
+      - ./wp/themes:/var/www/html/wp-content/themes
+      - ./wp/uploads:/var/www/html/wp-content/uploads
+    entrypoint: bash -lc
+    command: |
+      set -Eeuo pipefail
+      cd /var/www/html
+
+      # Wait for DB to be ready
+      for i in {1..30}; do wp db check >/dev/null 2>&1 && break || sleep 2; done
+
+      # Create wp-config.php if missing (quote DB host!)
+      wp config path >/dev/null 2>&1 || wp config create \
+        --dbname="${MYSQL_DATABASE}" \
+        --dbuser="${MYSQL_USER}" \
+        --dbpass="${MYSQL_PASSWORD}" \
+        --dbhost='db:3306' \
+        --skip-check
+      # Ensure DB_HOST is a quoted string (safe re-set)
+      wp config set DB_HOST 'db:3306' --type=constant
+
+      # Install core if needed
+      wp core is-installed >/dev/null 2>&1 || wp core install \
+        --url=http://localhost:8080 \
+        --title="Headless WP" \
+        --admin_user="${WP_ADMIN_USER:-mauro}" \
+        --admin_password="${WP_ADMIN_PASSWORD:-New!Strong!Pass123}" \
+        --admin_email="${WP_ADMIN_EMAIL:-maurovargas7725@gmail.com}"
+
+      # Best-effort: keep rewrites sane
+      wp option update permalink_structure '/%postname%/' || true
+      wp rewrite flush --hard || true
+
+      echo "WP-CLI ready"
+      tail -f /dev/null
 
   frontend:
     image: node:20
