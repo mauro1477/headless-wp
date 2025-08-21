@@ -1,3 +1,4 @@
+'use client';
 import { useEffect, useState } from 'react';
 
 export default function AuthBar() {
@@ -15,20 +16,15 @@ export default function AuthBar() {
     })();
   }, []);
 
-  async function logout() {
+  const logout = async () => {
     await fetch('/api/logout', { method: 'POST' });
     location.reload();
-  }
+  };
 
   return (
     <div style={{padding:8,borderBottom:'1px solid #eee',fontFamily:'system-ui'}}>
-      {viewer ? (
-        <>
-          Signed in as <b>{viewer.username}</b> · <button onClick={logout}>Log out</button>
-        </>
-      ) : (
-        <a href="/login">Sign in</a>
-      )}
+      {viewer ? <>Signed in as <b>{viewer.username}</b> · <button onClick={logout}>Log out</button></>
+              : <a href="/login">Sign in</a>}
     </div>
   );
 }
